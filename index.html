@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-HK" prefix="og: https://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
+  
+  <!-- 🏢 基礎 SEO 核心標籤：企業管治開源示範項目 -->
+  <title>日薪員工績效評估前置自動化系統 EnterpriseDemo-DailyStaffAppraisal | Governance-as-Code Demo</title>
+  <meta name="description" content="EnterpriseDemo-DailyStaffAppraisal 是一套零額外授權的前線日薪員工績效評估前置採集與自動定級系統示範。採用無授權邊緣採集前置層（Sidecar Pattern）銜接既有核心評估系統，落實香港 PDPO 第486章及 ISO/IEC 27001/27701 治理規範。">
+  <meta name="keywords" content="EnterpriseDemo-DailyStaffAppraisal, 績效評估, 企業管治, PDPO Cap 486, ISO 27001, ISO 27701, Power Automate, SharePoint Online, Microsoft Forms, Zero-License, Governance as Code">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://jackylawck.github.io/EnterpriseDemo-DailyStaffAppraisal/">
+
+  <!-- 👤 作者資訊 (隱藏於代碼作為 Portfolio 認證) -->
+  <meta name="author" content="羅子淇 (Jacky Law)">
+  <meta property="article:author" content="羅子淇 (Jacky Law)">
+
+  <!-- 🌐 Open Graph / LinkedIn / Facebook 社交卡片 -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jackylawck.github.io/EnterpriseDemo-DailyStaffAppraisal/">
+  <meta property="og:title" content="日薪員工績效評估前置自動化系統 (EnterpriseDemo-DailyStaffAppraisal) | 智慧內控實踐示範">
+  <meta property="og:description" content="零額外授權成本、確定性防呆規則引擎。展示如何以 M365 原生生態搭建無授權邊緣採集前置層，銜接既有核心人事評估系統。">
+  <meta property="og:image" content="https://demo-enterprise.local/assets/og-banner-appraisal.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="EnterpriseDemo-DailyStaffAppraisal 架構全景圖">
+  <meta property="og:locale" content="zh_HK">
+  <meta property="og:site_name" content="Enterprise Governance Demo">
+
+  <!-- 🐦 Twitter / X Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="EnterpriseDemo-DailyStaffAppraisal: 日薪員工績效評估前置系統">
+  <meta name="twitter:description" content="零授權前線手機免登入自評與監工加權定級工作流示範，落實香港 PDPO 與 ISO 27001/27701 高標準管治。">
+  <meta name="twitter:image" content="https://demo-enterprise.local/assets/og-banner-appraisal.png">
+
+  <!-- 📱 PWA 與行動端原生適配 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="EnterpriseDemo">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0b192c">
+  <meta name="application-name" content="EnterpriseDemo-DailyStaffAppraisal">
+
+  <!-- 🛡️ 企業級資安防禦策略：Content Security Policy (CSP) 與權限控制 -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https://img.shields.io;
+    font-src 'self' data:;
+    connect-src 'self';
+    media-src 'none';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'none';
+    frame-ancestors 'none';
+  ">
+  <meta http-equiv="Permissions-Policy" content="accelerometer=(), gyroscope=(), microphone=(), camera=(), geolocation=(), payment=()">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- 🏷️ Schema.org 結構化資料 (虛擬法人 + 真實作者 Person) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://demo-enterprise.local/#organization",
+        "name": "Enterprise Demo Framework",
+        "alternateName": "Enterprise Demo",
+        "url": "https://demo-enterprise.local/",
+        "logo": "https://demo-enterprise.local/assets/logo.png",
+        "description": "A generic enterprise demo showcasing governance, compliance, and zero-trust architecture."
+      },
+      {
+        "@type": "Person",
+        "@id": "https://github.com/jackylawck/#author",
+        "name": "羅子淇 (Jacky Law)",
+        "jobTitle": "System Architect & Corporate Governance Advisor",
+        "url": "https://github.com/jackylawck"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://jackylawck.github.io/EnterpriseDemo-DailyStaffAppraisal/#software",
+        "name": "EnterpriseDemo-DailyStaffAppraisal: 日薪員工績效評估前置自動化系統",
+        "alternateName": "Zero-License Frontline Performance Appraisal Pre-Collection System (Demo-Form)",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Microsoft 365, Web Browser",
+        "author": {
+          "@id": "https://github.com/jackylawck/#author"
+        },
+        "publisher": {
+          "@id": "https://demo-enterprise.local/#organization"
+        },
+        "description": "企業級零額外授權前線日薪員工績效評估前置採集與確定性自動定級系統示範，銜接既有核心評估系統並落實 PDPO 與 ISO 27001/27701 合規閉環。"
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --primary: #0078d4;
+      --primary-dark: #004578;
+      --bg-dark: #070f1e;
+      --card-bg: rgba(16, 29, 51, 0.75);
+      --card-border: rgba(0, 120, 212, 0.28);
+      --accent: #107c41;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang HK", "Microsoft JhengHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(0, 120, 212, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 124, 65, 0.12) 0px, transparent 50%);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 24px 16px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+    }
+
+    .lang-toggle {
+      background: rgba(0, 120, 212, 0.18);
+      color: #93c5fd;
+      border: 1px solid rgba(96, 165, 250, 0.4);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .lang-toggle:hover {
+      background: rgba(0, 120, 212, 0.35);
+      color: #ffffff;
+    }
+
+    header {
+      text-align: center;
+      padding: 24px 16px 28px;
+    }
+
+    .corp-badge {
+      display: inline-block;
+      background: rgba(0, 120, 212, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      padding: 4px 14px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 2.05rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 1.02rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .badge-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .badge-bar img {
+      height: 22px;
+    }
+
+    .tagline-box {
+      background: var(--card-bg);
+      border-left: 4px solid var(--primary);
+      border-radius: 4px;
+      padding: 16px 20px;
+      max-width: 860px;
+      margin: 0 auto 36px;
+      text-align: left;
+      font-size: 0.96rem;
+    }
+
+    .tagline-box strong {
+      color: #93c5fd;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 28px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .card h2 {
+      font-size: 1.32rem;
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    p {
+      color: #d1d5db;
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .flow-node {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 16px;
+      position: relative;
+    }
+
+    .flow-node.active {
+      border-color: rgba(16, 124, 65, 0.7);
+      background: rgba(16, 124, 65, 0.12);
+    }
+
+    .flow-step {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #60a5fa;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .flow-node.active .flow-step {
+      color: #34d399;
+    }
+
+    .flow-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .flow-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 0;
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    th {
+      background: rgba(0, 120, 212, 0.2);
+      color: #93c5fd;
+      padding: 12px 14px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #d1d5db;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .role-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e5e7eb;
+    }
+
+    /* Interactive Simulator Styles */
+    .sim-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .sim-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .sim-field label {
+      font-size: 0.8rem;
+      color: #93c5fd;
+      font-weight: 600;
+    }
+
+    .sim-field select,
+    .sim-field input[type="text"],
+    .score-input {
+      background: rgba(7, 15, 30, 0.9);
+      border: 1px solid rgba(96, 165, 250, 0.35);
+      color: #ffffff;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-family: inherit;
+    }
+
+    .score-input {
+      width: 64px;
+      text-align: center;
+    }
+
+    .zero-banner {
+      display: none;
+      background: rgba(220, 38, 38, 0.15);
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      color: #fca5a5;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-top: 14px;
+      font-weight: 600;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .kpi-box {
+      background: rgba(0, 120, 212, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      border-radius: 8px;
+      padding: 12px 14px;
+      text-align: center;
+    }
+
+    .kpi-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .kpi-value {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #60a5fa;
+    }
+
+    .tech-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .tech-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .tech-item h3 {
+      font-size: 0.95rem;
+      color: #60a5fa;
+      margin-bottom: 8px;
+    }
+
+    .tech-item p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0;
+    }
+
+    .artifact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .artifact-links a {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      color: #93c5fd;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+
+    .artifact-links a:hover {
+      background: rgba(0, 120, 212, 0.25);
+      color: #ffffff;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 16px 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      margin-top: 40px;
+    }
+
+    footer p.disclaimer {
+      color: #fbbf24;
+      font-size: 0.8rem;
+      max-width: 680px;
+      margin: 12px auto 0;
+      background: rgba(251, 191, 36, 0.1);
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .en { display: none; }
+    body.lang-en .tc { display: none; }
+    body.lang-en .en { display: inline; }
+    body.lang-en p.en,
+    body.lang-en div.en { display: block; }
+
+    @media (max-width: 640px) {
+      h1 { font-size: 1.55rem; }
+      .card { padding: 18px; }
+      body { padding: 16px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="top-nav">
+      <button type="button" class="lang-toggle" id="langBtn">Switch to English / 切換英文</button>
+    </div>
+
+    <header>
+      <div class="corp-badge">
+        <span class="tc">企業管治數位轉型・開源示範專案</span>
+        <span class="en">Enterprise Governance Digital Transformation • Open-Source Demo</span>
+      </div>
+      <h1>
+        <span class="tc">EnterpriseDemo-DailyStaffAppraisal: 日薪員工績效評估前置系統</span>
+        <span class="en">EnterpriseDemo-DailyStaffAppraisal: Frontline Appraisal Intake Engine</span>
+      </h1>
+      <div class="subtitle">Zero-License Frontline Performance Appraisal Pre-Collection & Automated Scoring Workflow (Demo-Form)</div>
+      
+      <div class="badge-bar">
+        <a href="https://github.com/jackylawck/EnterpriseDemo-DailyStaffAppraisal" target="_blank" rel="noopener">
+          <img src="https://img.shields.io/badge/System-EnterpriseDemo--DailyStaffAppraisal-0078D4.svg" alt="System EnterpriseDemo-DailyStaffAppraisal">
+        </a>
+        <img src="https://img.shields.io/badge/Organization-Enterprise%20Demo-blue.svg" alt="Enterprise Demo">
+        <img src="https://img.shields.io/badge/Compliance-HK%20PDPO%20Cap.%20486%20%7C%20ISO%2027001-green.svg" alt="PDPO Cap. 486 & ISO 27001">
+        <img src="https://img.shields.io/badge/AI%20Governance-Non--AI%20Deterministic-teal.svg" alt="Non-AI Deterministic">
+        <img src="https://img.shields.io/badge/Stack-Forms%20%7C%20Power%20Automate%20%7C%20SharePoint-orange.svg" alt="M365 Low Code">
+      </div>
+
+      <div class="tagline-box">
+        <strong>"Zero-License Edge Intake & Deterministic Grading Bridge for Existing Core HR Appraisal Systems"</strong><br>
+        <span class="tc">「零額外授權成本、確定性規則防呆——無縫銜接非授權前線工友與既有核心人事評估系統之自動化前置引擎」</span>
+        <span class="en">"Bridging non-licensed daily-paid site workers with an existing core HR appraisal system via zero-license M365 connectors and deterministic governance rules."</span>
+      </div>
+    </header>
+
+    <main>
+      <!-- 專案摘要與架構定位 -->
+      <section class="card">
+        <h2>
+          <span class="tc">📌 專案摘要與架構定位 (Executive Summary & Sidecar Pattern)</span>
+          <span class="en">📌 Executive Summary & Sidecar Architectural Positioning</span>
+        </h2>
+        <p><strong>This repository is an Enterprise Demo showcasing a Zero-License Edge Intake (Sidecar) Pattern using M365 and deterministic Governance-as-Code.</strong></p>
+        <p class="tc">企業內部已建置運作穩定的<strong>既有核心績效評估系統（Core Appraisal System）</strong>，但基於授權成本與資安隔離考量，並未開放前線日薪／工地員工帳號登入。<strong>EnterpriseDemo-DailyStaffAppraisal</strong> 在<strong>完全不更動既有核心系統</strong>、亦<strong>不增加前線員工軟體授權</strong>的前提下，透過 <strong>Microsoft 365 標準連接器（Forms、Power Automate、SharePoint Online 及 Outlook）</strong> 搭建自動化前置採集與加權定級層。</p>
+        <p class="en">While the enterprise operates a mature <strong>Core Appraisal System</strong> for HR archiving and payroll reconciliation, frontline daily-paid site workers are not provisioned with M365 licenses or core system logins. <strong>EnterpriseDemo-DailyStaffAppraisal</strong> acts as a non-invasive <strong>Zero-License Edge Intake Layer</strong>—automating self-assessment capture, URI-encoded supervisor routing, deterministic zero-score enforcement, and weighted grading prior to verified core system entry.</p>
+        <p class="tc">在合規治理定性上，本系統完全基於<strong>確定性條件邏輯（Deterministic Conditional Logic）</strong>與獲授權監工的實質人工評核，<strong>不採用任何機器學習或生成式 AI 演算法</strong>，從架構源頭規避《歐盟人工智能法案》（EU AI Act）附件三高風險 AI 監管門檻，並全面對齊香港<strong>《個人資料（私隱）條例》（第 486 章）</strong>、<strong>ISO/IEC 27001</strong> 及 <strong>ISO/IEC 27701</strong> 控制基準。</p>
+        <p class="en">By relying strictly on <strong>deterministic conditional rules (Non-AI)</strong> and authenticated human-in-the-loop supervisory sign-off, the workflow intentionally remains outside the scope of High-Risk AI regulations (EU AI Act Annex III, ISO/IEC 42001) while enforcing strict compliance with <strong>Hong Kong PDPO (Cap. 486)</strong>, <strong>ISO/IEC 27001</strong>, and <strong>ISO/IEC 27701</strong>.</p>
+      </section>
+
+      <!-- 流程生命週期與治理閉環 -->
+      <section class="card">
+        <h2>
+          <span class="tc">🏛️ 流程生命週期與雙問卷接力閉環 (Workflow Lifecycle)</span>
+          <span class="en">🏛️ End-to-End Workflow Lifecycle & Closed-Loop Relay</span>
+        </h2>
+        <p class="tc">為解決前線員工「無企業帳號登入」與傳統紙本評核「難以落實權重與防呆」的雙重痛點，系統透過雙問卷與雙自動化流程實現端到端閉環管理：</p>
+        <p class="en">To reconcile anonymous frontline accessibility with authenticated supervisory accountability, the system orchestrates two forms and two cloud flows into a closed-loop pipeline:</p>
+        
+        <div class="flow-grid">
+          <div class="flow-node">
+            <div class="flow-step">Step 01 • 問卷 A</div>
+            <div class="flow-title"><span class="tc">手機掃碼免登入自評</span><span class="en">Anonymous QR Intake</span></div>
+            <p class="flow-desc"><span class="tc">公開問卷（Anyone can respond），4 節分支自動區分一般工種與工頭題目。</span><span class="en">Public form with 4-section conditional branching for general trades vs. foremen.</span></p>
+          </div>
+          <div class="flow-node">
+            <div class="flow-step">Step 02 • Flow 1</div>
+            <div class="flow-title"><span class="tc">模板分流與預填網址</span><span class="en">Routing & Pre-Filled URL</span></div>
+            <p class="flow-desc"><span class="tc">正規化員工編號，自動指派 W1/W2 範本，組裝 URI 編碼連結電郵通知監工。</span><span class="en">Normalizes Staff ID, assigns W1/W2 template, and emails URI-encoded Form B link.</span></p>
+          </div>
+          <div class="flow-node">
+            <div class="flow-step">Step 03 • 問卷 B</div>
+            <div class="flow-title"><span class="tc">監工登入驗證評核</span><span class="en">Authenticated Review</span></div>
+            <p class="flow-desc"><span class="tc">限內部帳號登入（Only people in my org），自動帶出工友資料並要求填寫創新實證。</span><span class="en">M365 login required; pre-fills worker context and captures Q03 innovation proof.</span></p>
+          </div>
+          <div class="flow-node">
+            <div class="flow-step">Step 04 • Flow 2</div>
+            <div class="flow-title"><span class="tc">確定性防呆與自動定級</span><span class="en">Zero-Score Rule & Grading</span></div>
+            <p class="flow-desc"><span class="tc">第 3 題無具體事項自動覆寫為 0 分；SharePoint 即時計算加權總分與等級 A–E。</span><span class="en">Forces Q03 = 0 if unsubstantiated; calculates weighted total, %, and Grade A–E.</span></p>
+          </div>
+          <div class="flow-node active">
+            <div class="flow-step">Step 05 • 核心系統閉環</div>
+            <div class="flow-title"><span class="tc">HR 核對取數錄入歸檔</span><span class="en">HR Core System Entry</span></div>
+            <p class="flow-desc"><span class="tc">系統自動電郵通知 HR 及行政團隊核對計算結果，安全錄入既有核心評估系統。</span><span class="en">Notifies HR Admin with verified scores and direct list link for core system entry.</span></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 業務治理對照矩陣 -->
+      <section class="card">
+        <h2>
+          <span class="tc">📋 業務治理與權限隔離矩陣 (Governance & Access Matrix)</span>
+          <span class="en">📋 Governance & Access Isolation Matrix</span>
+        </h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="tc">階段</span><span class="en">Stage</span></th>
+                <th><span class="tc">責任角色</span><span class="en">Role</span></th>
+                <th><span class="tc">承載平台</span><span class="en">Platform</span></th>
+                <th><span class="tc">處置動作與內控審計機制</span><span class="en">Action & Governance Control</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="tc">一、前線自評</span><span class="en">1. Self-Appraisal</span></strong></td>
+                <td><span class="role-badge"><span class="tc">日薪工友</span><span class="en">Daily Worker</span></span></td>
+                <td>Microsoft Forms (Form A)</td>
+                <td><span class="tc">免登入掃碼填報基本資料與自評分數；僅具單向寫入權限（Write-Only），無法讀取後端清單。</span><span class="en">Anonymous QR submission with 4-section branching; write-only ingress with zero backend read access.</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="tc">二、路由分流</span><span class="en">2. Dynamic Routing</span></strong></td>
+                <td><span class="role-badge">Flow 1 Engine</span></td>
+                <td>Power Automate</td>
+                <td><span class="tc">執行 <code>trim(toUpper())</code> 清洗編號，按職位自動判定 <code>W1</code>（100分）或 <code>W2</code>（150分），組裝 <code>encodeUriComponent</code> 預填連結。</span><span class="en">Normalizes Staff ID, classifies <code>W1</code> (100pt) vs <code>W2</code> (150pt), and builds URI-encoded pre-filled link.</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="tc">三、主管評核</span><span class="en">3. Supervisor Review</span></strong></td>
+                <td><span class="role-badge"><span class="tc">地盤監工</span><span class="en">Site Supervisor</span></span></td>
+                <td>Microsoft Forms (Form B)</td>
+                <td><span class="tc">強制企業 M365 帳號登入驗證，留存提交者身份與 UTC 時間戳記；第 3 題須填寫創新具體事例。</span><span class="en">Enforces corporate M365 authentication and audit trail; requires concrete substantiation for Criterion 3.</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="tc">四、防呆定級</span><span class="en">4. Rule Enforcement</span></strong></td>
+                <td><span class="role-badge">Flow 2 & SharePoint</span></td>
+                <td>Power Automate + Lists</td>
+                <td><span class="tc">自動檢核 Q03 實證黑名單，無實證強制計 <code>0</code> 分；4 個計算欄即時運算加權總分、百分比、5分制平均分及等級 <code>A–E</code>。</span><span class="en">Deterministic zero-score override for unsubstantiated Q03; auto-calculates weighted total, %, 5-pt avg, and Grade <code>A–E</code>.</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="tc">五、核心歸檔</span><span class="en">5. Core Archiving</span></strong></td>
+                <td><span class="role-badge"><span class="tc">HR 行政團隊</span><span class="en">HR Admin Team</span></span></td>
+                <td>Outlook + Core HR System</td>
+                <td><span class="tc">接收完成通知電郵後，於受控權限之 SharePoint 清單核對取數並錄入既有核心評估系統，定期清理暫存紀錄。</span><span class="en">Reviews verified summary in restricted SharePoint list and reconciles into the legacy Core Appraisal System.</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 互動式加權計分與防呆規則模擬器 -->
+      <section class="card">
+        <h2>
+          <span class="tc">🧮 互動式加權計分與「無實證即零分」防呆模擬器 (Live Rule Simulator)</span>
+          <span class="en">🧮 Interactive Weighted Scoring & Zero-Score Governance Simulator</span>
+        </h2>
+        <p class="tc">切換評估範本（<code>W1</code> 一般工種 100 分制 / <code>W2</code> 工頭 150 分制）或將第 3 題「創造力具體事項」改為「無 / N/A / 留空」，即時驗證確定性規則引擎的運算結果：</p>
+        <p class="en">Toggle between <code>W1</code> (100-pt) and <code>W2</code> (150-pt) templates or enter <code>無</code> / <code>N/A</code> / blank in Q03 Justification to observe the deterministic governance engine in real time:</p>
+
+        <div class="sim-toolbar">
+          <div class="sim-field">
+            <label for="tplSelect"><span class="tc">評估範本 (Template Routing)：</span><span class="en">Appraisal Template:</span></label>
+            <select id="tplSelect">
+              <option value="W1">W1 — 一般工種 / General Trades (10 題 / 滿分 100 分)</option>
+              <option value="W2">W2 — 工頭及助理工頭 / Foreman Tier (15 題 / 滿分 150 分)</option>
+            </select>
+          </div>
+          <div class="sim-field">
+            <label for="q03Input"><span class="tc">Q03「創造力及創新思維」具體事項（留空或填「無」測試零分規則）：</span><span class="en">Q03 Innovation Proof (Leave blank or enter "無" / "N/A" to test rule):</span></label>
+            <input type="text" id="q03Input" value="改良紮鐵支架擺放流程，縮短吊運時間" />
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th><span class="tc">能力評估指標</span><span class="en">Competency Criterion</span></th>
+                <th><span class="tc">權重</span><span class="en">Weight</span></th>
+                <th><span class="tc">評分 (1–5)</span><span class="en">Rating (1–5)</span></th>
+                <th><span class="tc">加權得分</span><span class="en">Weighted Score</span></th>
+              </tr>
+            </thead>
+            <tbody id="simBody"></tbody>
+          </table>
+        </div>
+
+        <div class="zero-banner" id="zeroBanner">
+          <span class="tc">⚠️ 觸發確定性防呆規則 (Final_SupQ03_Score)：監工未填寫有效創新具體事項（留空或命中「無 / 沒有 / 冇 / N/A / -」黑名單），系統已自動將 Q03 得分強制覆寫為 0 分！</span>
+          <span class="en">⚠️ Deterministic Rule Triggered (Final_SupQ03_Score): Q03 justification is blank or matches the non-substantive blacklist. Q03 score has been overridden to 0!</span>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-box">
+            <div class="kpi-label"><span class="tc">加權總分 (TotalScore)</span><span class="en">Weighted Total</span></div>
+            <div class="kpi-value" id="kpiTotal">80 / 100</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-label"><span class="tc">得分百分比 (Percentage)</span><span class="en">Percentage</span></div>
+            <div class="kpi-value" id="kpiPct">80.00%</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-label"><span class="tc">5 分制平均分 (Avg 5-Pt)</span><span class="en">5-Point Average</span></div>
+            <div class="kpi-value" id="kpiAvg">4.00</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-label"><span class="tc">自動定級 (Grade)</span><span class="en">Final Grade</span></div>
+            <div class="kpi-value" id="kpiGrade">B (良好)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 技術亮點與進階架構 -->
+      <section class="card">
+        <h2>
+          <span class="tc">⚙️ 技術亮點與合規工程實踐 (Technical & Governance Highlights)</span>
+          <span class="en">⚙️ Technical & Compliance Engineering Highlights</span>
+        </h2>
+        <div class="tech-list">
+          <div class="tech-item">
+            <h3>1. <span class="tc">零授權邊緣採集前置層</span><span class="en">Zero-License Edge Intake</span></h3>
+            <p><span class="tc">在不更動既有核心人事系統、亦不購買前線 M365 授權的前提下，透過 Standard Connectors 實現前線掃碼採集與自動定級。</span><span class="en">Bridges non-licensed frontline workers with an existing core appraisal system using pure M365 Standard Connectors.</span></p>
+          </div>
+          <div class="tech-item">
+            <h3>2. <span class="tc">實證強制零分防呆引擎</span><span class="en">Zero-Score Rule Engine</span></h3>
+            <p><span class="tc">透過 <code>contains(createArray(...), trim(toLower(coalesce(...))))</code> 過濾無效敷衍字眼，杜絕無實證「人情分」。</span><span class="en">Deterministically overrides Q03 rating to 0 when justification text is blank or matches placeholder blacklists.</span></p>
+          </div>
+          <div class="tech-item">
+            <h3>3. <span class="tc">雙軌動態模板與分支轉型</span><span class="en">Dynamic W1/W2 & Null-Safe Cast</span></h3>
+            <p><span class="tc">按職位自動路由 10 題（W1）或 15 題（W2）範本，並以 <code>if(empty(...), 0, int(...))</code> 防止跳題空字串引發執行期報錯。</span><span class="en">Auto-routes W1 (100-pt) vs W2 (150-pt) templates and applies null-safe integer casting for skipped branch questions.</span></p>
+          </div>
+          <div class="tech-item">
+            <h3>4. <span class="tc">URI 編碼預填網址接力</span><span class="en">URI-Encoded URL Relay</span></h3>
+            <p><span class="tc">利用 <code>encodeUriComponent()</code> 安全封裝中文姓名與職位參數，確保預填連結在桌面及手機版 Outlook 穩定開啟。</span><span class="en">Encodes Traditional Chinese parameters via <code>encodeUriComponent()</code> so pre-filled Form B links never break across mail clients.</span></p>
+          </div>
+          <div class="tech-item">
+            <h3>5. <span class="tc">確定性非 AI 治理邊界</span><span class="en">Non-AI Regulatory Scope-Out</span></h3>
+            <p><span class="tc">刻意採用透明確定性算術規則與人工主管簽核，主動排除歐盟 AI 法案（EU AI Act）高風險 AI 系統合規負擔。</span><span class="en">Transparent rule-based arithmetic with human-in-the-loop review intentionally avoids High-Risk AI regulatory overhead.</span></p>
+          </div>
+          <div class="tech-item">
+            <h3>6. <span class="tc">PDPO 與 ISO 雙標準對齊</span><span class="en">PDPO & ISO Alignment</span></h3>
+            <p><span class="tc">前端嵌入雙語《收集個人資料聲明》（PICS），後端實施最小權限清單隔離與審計時間戳記，對齊 Cap. 486 與 ISO 27001/27701。</span><span class="en">Embeds bilingual PICS notices, enforces write-only ingress isolation, and aligns with HK PDPO Cap. 486 and ISO 27001/27701.</span></p>
+          </div>
+        </div>
+
+        <div class="artifact-links">
+          <a href="docs/forms-design-and-branching.md">Forms Branching & Weights</a>
+          <a href="docs/sharepoint-schema-and-formulas.md">SharePoint Schema & Formulas</a>
+          <a href="docs/power-automate-expressions.md">Power Automate Expressions</a>
+          <a href="docs/compliance-and-governance-assessment.md">PDPO / ISO / AI Scope-Out</a>
+          <a href="docs/deployment-and-uat-checklist.md">Deployment & UAT Matrix</a>
+          <a href="flows/Flow1_WorkerToSupervisor.json">Flow 1 JSON</a>
+          <a href="flows/Flow2_SupervisorToAdmin.json">Flow 2 JSON</a>
+          <a href="schemas/daily_staff_appraisal_schema.json">JSON Schema</a>
+          <a href="SECURITY.md">SECURITY.md</a>
+        </div>
+      </section>
+    </main>
+    
+    <footer>
+      <p>© 2026 Enterprise Demo Framework. 採 MIT License 授權發佈。</p>
+      <p class="disclaimer"><strong>Disclaimer:</strong> This project is a generic enterprise demo created for architectural and governance research. All data, organizational names, Form GUIDs, and endpoints used are fictional or generic placeholders.</p>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      const criteria = [
+        { id: 1, tc: "團隊精神、服從性及工作態度", en: "Teamwork, Compliance & Attitude", w: 2, tier: "W1" },
+        { id: 2, tc: "責任感、自律及積極性", en: "Responsibility, Self-Discipline & Initiative", w: 2, tier: "W1" },
+        { id: 3, tc: "創造力及創新思維（受實證規則約束）", en: "Creativity & Innovation (Substantiation Governed)", w: 1, tier: "W1" },
+        { id: 4, tc: "自我增值及提升個人能力", en: "Self-Enhancement & Capability Growth", w: 1, tier: "W1" },
+        { id: 5, tc: "按時完成所分配工作", en: "Timely Completion of Assigned Tasks", w: 3, tier: "W1" },
+        { id: 6, tc: "技術質量及手工藝", en: "Technical Quality & Workmanship", w: 3, tier: "W1" },
+        { id: 7, tc: "解決問題能力", en: "Problem-Solving Capability", w: 2, tier: "W1" },
+        { id: 8, tc: "相關工作崗位之知識", en: "Job-Related Technical Knowledge", w: 2, tier: "W1" },
+        { id: 9, tc: "安全及環保意識", en: "Safety & Environmental Awareness", w: 2, tier: "W1" },
+        { id: 10, tc: "對公司或其他人之正面影響", en: "Positive Influence on Company & Peers", w: 1, tier: "W1" },
+        { id: 11, tc: "及時作出決定並執行", en: "Timely Decision-Making & Execution", w: 2, tier: "W2" },
+        { id: 12, tc: "成本控制的意識和能力", en: "Cost Control Awareness & Capability", w: 2, tier: "W2" },
+        { id: 13, tc: "安排及管理團隊的工作，例如派工", en: "Team Scheduling & Task Allocation", w: 3, tier: "W2" },
+        { id: 14, tc: "協助團隊的培訓發展及工藝傳承", en: "Team Coaching & Craftsmanship Transfer", w: 1, tier: "W2" },
+        { id: 15, tc: "鼓勵、指導及支持團隊完成目標", en: "Encouraging & Guiding Team to Goals", w: 2, tier: "W2" }
+      ];
+
+      const blacklist = ["", "無", "沒有", "冇", "n/a", "na", "nil", "none", "-", "0", "無事項", "未有"];
+      const simBody = document.getElementById("simBody");
+      const tplSelect = document.getElementById("tplSelect");
+      const q03Input = document.getElementById("q03Input");
+      const zeroBanner = document.getElementById("zeroBanner");
+
+      function buildTable() {
+        const tpl = tplSelect.value;
+        simBody.innerHTML = "";
+        criteria.forEach((item) => {
+          if (tpl === "W1" && item.tier === "W2") return;
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><code>Q${String(item.id).padStart(2, "0")}</code></td>
+            <td><span class="tc">${item.tc}</span><span class="en">${item.en}</span></td>
+            <td>×${item.w}</td>
+            <td><input type="number" class="score-input" min="1" max="5" value="4" data-id="${item.id}" data-w="${item.w}" /></td>
+            <td id="cell-w-${item.id}">${4 * item.w}</td>
+          `;
+          simBody.appendChild(tr);
+        });
+        document.querySelectorAll(".score-input").forEach((el) => {
+          el.addEventListener("input", computeScores);
+        });
+        computeScores();
+      }
+
+      function computeScores() {
+        const tpl = tplSelect.value;
+        const maxPts = tpl === "W1" ? 100 : 150;
+        const divisor = tpl === "W1" ? 20 : 30;
+        const proofVal = (q03Input.value || "").trim().toLowerCase();
+        const zeroForced = blacklist.includes(proofVal);
+
+        zeroBanner.style.display = zeroForced ? "block" : "none";
+
+        let total = 0;
+        document.querySelectorAll(".score-input").forEach((el) => {
+          const id = Number(el.dataset.id);
+          const w = Number(el.dataset.w);
+          let raw = Math.min(5, Math.max(1, Number(el.value) || 1));
+          if (id === 3 && zeroForced) raw = 0;
+          const weighted = raw * w;
+          total += weighted;
+          const targetCell = document.getElementById(`cell-w-${id}`);
+          if (targetCell) targetCell.textContent = weighted;
+        });
+
+        const pct = (total / maxPts) * 100;
+        const avg = total / divisor;
+        let grade = "E (惡劣)";
+        if (avg >= 4.5) grade = "A (優異)";
+        else if (avg >= 3.5) grade = "B (良好)";
+        else if (avg >= 2.5) grade = "C (一般)";
+        else if (avg >= 1.5) grade = "D (水平以下)";
+
+        document.getElementById("kpiTotal").textContent = `${total} / ${maxPts}`;
+        document.getElementById("kpiPct").textContent = `${pct.toFixed(2)}%`;
+        document.getElementById("kpiAvg").textContent = avg.toFixed(2);
+        document.getElementById("kpiGrade").textContent = grade;
+      }
+
+      document.getElementById("langBtn").addEventListener("click", () => {
+        document.body.classList.toggle("lang-en");
+      });
+      tplSelect.addEventListener("change", buildTable);
+      q03Input.addEventListener("input", computeScores);
+      buildTable();
+    })();
+  </script>
+</body>
+</html>
