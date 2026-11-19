@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://demo-tenant.sharepoint.com/schemas/daily-staff-appraisal.schema.json",
+  "title": "DailyStaffAppraisal Data Contract | 日薪員工年度績效評估數據結構規範",
+  "description": "Sanitized JSON Schema defining the staging data record, scoring constraints, template routing (W1/W2), and deterministic grading outputs prior to core HR appraisal system ingestion. | 定義日薪員工年度績效評估在寫入既有核心系統前的暫存數據結構、評分邊界、W1/W2 模板路由及確定性定級欄位。",
+  "type": "object",
+  "required": [
+    "Title",
+    "StaffName",
+    "JobTitle",
+    "TemplateType",
+    "SupervisorName",
+    "SupervisorEmail",
+    "Status"
+  ],
+  "properties": {
+    "Title": {
+      "type": "string",
+      "pattern": "^[A-Z0-9-]+$",
+      "description": "Normalized Staff ID (trim + toUpper) | 經正規化處理的唯一員工編號"
+    },
+    "StaffName": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Employee Full Name | 員工姓名"
+    },
+    "JobTitle": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Site Job Role (e.g., 工頭, 助理工頭, 技工, 雜工) | 工地職位名稱"
+    },
+    "TemplateType": {
+      "type": "string",
+      "enum": [
+        "W1",
+        "W2"
+      ],
+      "description": "W1 = General Trades (10 items, 100 max pts); W2 = Supervisory Roles (15 items, 150 max pts) | 評估範本代碼"
+    },
+    "SupervisorName": {
+      "type": "string",
+      "description": "Assigned Site Supervisor Name | 所屬地盤監工姓名"
+    },
+    "SupervisorEmail": {
+      "type": "string",
+      "format": "email",
+      "description": "Supervisor Corporate M365 Email | 監工企業 M365 電郵地址"
+    },
+    "SelfAssessmentScores": {
+      "type": "object",
+      "description": "Worker self-appraisal ratings (1-5 scale; Q11-Q15 default to 0 for W1) | 工友自評分數 (1-5分)",
+      "properties": {
+        "SelfQ01_Teamwork": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "SelfQ02_Responsibility": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "SelfQ03_Creativity": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "SelfQ04_SelfEnhancement": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "SelfQ05_Timeliness": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "SelfQ06_Workmanship": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "SelfQ07_ProblemSolving": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "SelfQ08_JobKnowledge": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "SelfQ09_SafetyEnv": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "SelfQ10_PositiveImpact": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "SelfQ11_DecisionExecution": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "SelfQ12_CostControl": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "SelfQ13_TeamScheduling": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "SelfQ14_CoachingTransfer": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "SelfQ15_TeamSupport": { "type": "integer", "minimum": 0, "maximum": 5 }
+      }
+    },
+    "SupervisorEvaluationScores": {
+      "type": "object",
+      "description": "Authenticated supervisor ratings (1-5 scale; Q03 may be 0 under substantiation governance rule) | 監工評核分數",
+      "properties": {
+        "SupQ01_Teamwork": { "type": "integer", "minimum": 1, "maximum": 5, "x-weight": 2 },
+        "SupQ02_Responsibility": { "type": "integer", "minimum": 1, "maximum": 5, "x-weight": 2 },
+        "SupQ03_Creativity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5,
+          "x-weight": 1,
+          "description": "Forced to 0 if SupervisorInnovationNote lacks substantive justification | 若無具體創新事例自動計 0 分"
+        },
+        "SupQ04_SelfEnhancement": { "type": "integer", "minimum": 1, "maximum": 5, "x-weight": 1 },
+        "SupQ05_Timeliness": { "type": "integer", "minimum": 1, "maximum": 5, "x-weight": 3 },
+        "SupQ06_Workmanship": { "type": "integer", "minimum": 1, "maximum": 5, "x-weight": 3 },
+        "SupQ07_ProblemSolving": { "type": "integer", "minimum": 1, "maximum": 5, "x-weight": 2 },
+        "SupQ08_JobKnowledge": { "type": "integer", "minimum": 1, "maximum": 5, "x-weight": 2 },
+        "SupQ09_SafetyEnv": { "type": "integer", "minimum": 1, "maximum": 5, "x-weight": 2 },
+        "SupQ10_PositiveImpact": { "type": "integer", "minimum": 1, "maximum": 5, "x-weight": 1 },
+        "SupQ11_DecisionExecution": { "type": "integer", "minimum": 0, "maximum": 5, "x-weight": 2 },
+        "SupQ12_CostControl": { "type": "integer", "minimum": 0, "maximum": 5, "x-weight": 2 },
+        "SupQ13_TeamScheduling": { "type": "integer", "minimum": 0, "maximum": 5, "x-weight": 3 },
+        "SupQ14_CoachingTransfer": { "type": "integer", "minimum": 0, "maximum": 5, "x-weight": 1 },
+        "SupQ15_TeamSupport": { "type": "integer", "minimum": 0, "maximum": 5, "x-weight": 2 }
+      }
+    },
+    "CalculatedOutputs": {
+      "type": "object",
+      "description": "Deterministic SharePoint Calculated Columns | SharePoint 自動計算輸出欄位",
+      "properties": {
+        "TotalScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 150,
+          "description": "Weighted sum (W1 max 100 / W2 max 150) | 加權總分"
+        },
+        "Percentage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Normalized percentage score | 得分百分比"
+        },
+        "AverageScore_5Pt": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5,
+          "description": "5-point scale equivalent average | 5分制平均分"
+        },
+        "Grade": {
+          "type": "string",
+          "enum": [
+            "A (優異)",
+            "B (良好)",
+            "C (一般)",
+            "D (水平以下)",
+            "E (惡劣)"
+          ],
+          "description": "Deterministic final grade | 自動判定最終等級"
+        }
+      }
+    },
+    "Status": {
+      "type": "string",
+      "enum": [
+        "待評分",
+        "已完成 (待錄入系統)"
+      ],
+      "description": "Workflow lifecycle status | 流程狀態"
+    },
+    "SupervisorSubmittedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp recorded upon supervisor submission | 監工提交時間 (UTC)"
+    }
+  }
+}
