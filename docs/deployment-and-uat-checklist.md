@@ -32,5 +32,3 @@ This guide outlines the standardized deployment sequence and User Acceptance Tes
 | **UAT-03** | **Q03 Zero-Score Rule**<br>創造力「無實證即零分」防呆 | Supervisor rates Q03 = `5`, but enters `無` / `N/A` / whitespace in justification | Flow 2 overrides `上司評分Q03` to **`0`**; `TotalScore` deducts the unsubstantiated points; audit note preserved | `[ ]` |
 | **UAT-04** | **Staff ID Normalization**<br>員工編號空格與大小寫容錯 | Worker enters `  test01  ` in Form A; Supervisor submits pre-filled Form B | `Clean_StaffID` normalizes to `TEST01`; OData query matches exact SharePoint record without duplicate creation | `[ ]` |
 | **UAT-05** | **Unauthorized Form B Access**<br>未登入帳號嘗試開啟問卷 B | External / incognito browser opens Form B pre-filled URL | Blocked by Microsoft Entra ID authentication prompt (`Only people in my organization can respond`) | `[ ]` |
-
-```
