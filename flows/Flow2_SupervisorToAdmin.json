@@ -1,0 +1,195 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "metadata": {
+    "workflowName": "EnterpriseDemo_Appraisal_02_SupervisorToAdmin",
+    "description_en": "Sanitized Flow 2 definition: Captures authenticated supervisor rating from Form B, enforces deterministic zero-score rule on Q03 if unsubstantiated, updates SharePoint record, retrieves calculated grades, and notifies HR Admin.",
+    "description_tc": "脫敏版 Flow 2 流程定義：接收問卷 B 監工評核、執行第 3 題「無具體事項即零分」確定性規則、更新 SharePoint 紀錄、讀取自動計分與等級，並電郵通知行政團隊取數。",
+    "sanitizationStatus": "Sanitized - All Tenant IDs, Form GUIDs, and Corporate Emails Replaced"
+  },
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "$connections": {
+      "defaultValue": {},
+      "type": "Object"
+    },
+    "$authentication": {
+      "defaultValue": {},
+      "type": "SecureObject"
+    }
+  },
+  "triggers": {
+    "When_a_new_response_is_submitted": {
+      "type": "OpenApiConnectionWebhook",
+      "inputs": {
+        "host": {
+          "connectionName": "shared_microsoftforms",
+          "operationId": "CreateFormWebhook",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_microsoftforms"
+        },
+        "parameters": {
+          "form_id": "<DEMO_FORM_B_GUID>"
+        },
+        "authentication": "@parameters('$authentication')"
+      },
+      "metadata": {
+        "comment": "Form B (Supervisor Evaluation / 問卷 B 監工評分表 - Only people in my organization can respond)"
+      }
+    }
+  },
+  "actions": {
+    "Get_response_details": {
+      "runAfter": {},
+      "type": "OpenApiConnection",
+      "inputs": {
+        "host": {
+          "connectionName": "shared_microsoftforms",
+          "operationId": "GetFormResponseById",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_microsoftforms"
+        },
+        "parameters": {
+          "form_id": "<DEMO_FORM_B_GUID>",
+          "response_id": "@triggerOutputs()?['body/resourceData/responseId']"
+        },
+        "authentication": "@parameters('$authentication')"
+      }
+    },
+    "Clean_Sup_StaffID": {
+      "runAfter": {
+        "Get_response_details": [
+          "Succeeded"
+        ]
+      },
+      "type": "Compose",
+      "inputs": "@trim(toUpper(outputs('Get_response_details')?['body/<FIELD_B_STAFFID_GUID>']))"
+    },
+    "Final_SupQ03_Score": {
+      "runAfter": {
+        "Clean_Sup_StaffID": [
+          "Succeeded"
+        ]
+      },
+      "type": "Compose",
+      "inputs": "@if(contains(createArray('', '無', '沒有', '冇', 'n/a', 'na', 'nil', 'none', '-', '0', '無事項', '未有'), trim(toLower(coalesce(outputs('Get_response_details')?['body/<FIELD_B_Q03_JUSTIFICATION_GUID>'], '')))), 0, int(outputs('Get_response_details')?['body/<FIELD_B_Q03_SCORE_GUID>']))",
+      "metadata": {
+        "comment": "Governance Rule: Force Q03 score to 0 if justification is missing or non-substantive / 確定性防呆規則：無具體事項自動計零分"
+      }
+    },
+    "Get_Pending_Appraisal_Record": {
+      "runAfter": {
+        "Final_SupQ03_Score": [
+          "Succeeded"
+        ]
+      },
+      "type": "OpenApiConnection",
+      "inputs": {
+        "host": {
+          "connectionName": "shared_sharepointonline",
+          "operationId": "GetItems",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+        },
+        "parameters": {
+          "dataset": "https://demo-tenant.sharepoint.com/sites/EnterpriseDemoHR",
+          "table": "<DEMO_APPRAISAL_LIST_GUID>",
+          "$filter": "@concat('Title eq ''', outputs('Clean_Sup_StaffID'), '''')",
+          "$top": 1
+        },
+        "authentication": "@parameters('$authentication')"
+      }
+    },
+    "For_each_Record": {
+      "foreach": "@outputs('Get_Pending_Appraisal_Record')?['body/value']",
+      "actions": {
+        "Update_Appraisal_Item": {
+          "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "PatchItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "https://demo-tenant.sharepoint.com/sites/EnterpriseDemoHR",
+              "table": "<DEMO_APPRAISAL_LIST_GUID>",
+              "id": "@items('For_each_Record')?['ID']",
+              "item": {
+                "SupQ01": "@int(outputs('Get_response_details')?['body/<FIELD_B_Q01_GUID>'])",
+                "SupQ02": "@int(outputs('Get_response_details')?['body/<FIELD_B_Q02_GUID>'])",
+                "SupQ03": "@int(outputs('Final_SupQ03_Score'))",
+                "SupQ04": "@int(outputs('Get_response_details')?['body/<FIELD_B_Q04_GUID>'])",
+                "SupQ05": "@int(outputs('Get_response_details')?['body/<FIELD_B_Q05_GUID>'])",
+                "SupQ06": "@int(outputs('Get_response_details')?['body/<FIELD_B_Q06_GUID>'])",
+                "SupQ07": "@int(outputs('Get_response_details')?['body/<FIELD_B_Q07_GUID>'])",
+                "SupQ08": "@int(outputs('Get_response_details')?['body/<FIELD_B_Q08_GUID>'])",
+                "SupQ09": "@int(outputs('Get_response_details')?['body/<FIELD_B_Q09_GUID>'])",
+                "SupQ10": "@int(outputs('Get_response_details')?['body/<FIELD_B_Q10_GUID>'])",
+                "SupQ11": "@if(empty(outputs('Get_response_details')?['body/<FIELD_B_Q11_GUID>']), 0, int(outputs('Get_response_details')?['body/<FIELD_B_Q11_GUID>']))",
+                "SupQ12": "@if(empty(outputs('Get_response_details')?['body/<FIELD_B_Q12_GUID>']), 0, int(outputs('Get_response_details')?['body/<FIELD_B_Q12_GUID>']))",
+                "SupQ13": "@if(empty(outputs('Get_response_details')?['body/<FIELD_B_Q13_GUID>']), 0, int(outputs('Get_response_details')?['body/<FIELD_B_Q13_GUID>']))",
+                "SupQ14": "@if(empty(outputs('Get_response_details')?['body/<FIELD_B_Q14_GUID>']), 0, int(outputs('Get_response_details')?['body/<FIELD_B_Q14_GUID>']))",
+                "SupQ15": "@if(empty(outputs('Get_response_details')?['body/<FIELD_B_Q15_GUID>']), 0, int(outputs('Get_response_details')?['body/<FIELD_B_Q15_GUID>']))",
+                "SupervisorInnovationNote": "@outputs('Get_response_details')?['body/<FIELD_B_Q03_JUSTIFICATION_GUID>']",
+                "SupervisorRemarks": "@outputs('Get_response_details')?['body/<FIELD_B_REMARKS_GUID>']",
+                "Status/Value": "已完成 (待錄入系統)",
+                "SupervisorSubmittedAt": "@utcNow()"
+              }
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_Calculated_Item": {
+          "runAfter": {
+            "Update_Appraisal_Item": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "https://demo-tenant.sharepoint.com/sites/EnterpriseDemoHR",
+              "table": "<DEMO_APPRAISAL_LIST_GUID>",
+              "id": "@outputs('Update_Appraisal_Item')?['body/ID']"
+            },
+            "authentication": "@parameters('$authentication')"
+          },
+          "metadata": {
+            "comment": "Retrieve SharePoint auto-calculated TotalScore, Percentage, 5-Pt Avg, and Grade / 讀取系統自動計算總分與等級"
+          }
+        },
+        "Send_Completion_Email_to_Admin": {
+          "runAfter": {
+            "Get_Calculated_Item": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365",
+              "operationId": "SendEmailV2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "emailMessage/To": "ops-lead@companydemo.com; hr-admin@companydemo.com; hr-ops@companydemo.com",
+              "emailMessage/Subject": "【日薪績效評估已完成 | Appraisal Completed】@{outputs('Get_Calculated_Item')?['body/StaffName']} (@{outputs('Get_Calculated_Item')?['body/Title']}) - Grade: @{outputs('Get_Calculated_Item')?['body/Grade']}",
+              "emailMessage/Body": "<p>監工已完成年度績效評分 / Supervisor evaluation completed:</p><ul><li>Staff ID: @{outputs('Get_Calculated_Item')?['body/Title']}</li><li>Template: @{outputs('Get_Calculated_Item')?['body/TemplateType/Value']}</li><li>Total Score: @{outputs('Get_Calculated_Item')?['body/TotalScore']}</li><li>Grade: @{outputs('Get_Calculated_Item')?['body/Grade']}</li></ul><p>List URL: https://demo-tenant.sharepoint.com/sites/EnterpriseDemoHR/Lists/DailyStaffAppraisal/AllItems.aspx</p>",
+              "emailMessage/Importance": "Normal"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "runAfter": {
+        "Get_Pending_Appraisal_Record": [
+          "Succeeded"
+        ]
+      },
+      "type": "Foreach"
+    }
+  }
+}
